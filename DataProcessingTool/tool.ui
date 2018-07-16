@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1025</width>
-    <height>419</height>
+    <height>526</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -39,7 +39,7 @@
      <string notr="true">font: 75 10pt &quot;楷体&quot;;</string>
     </property>
     <property name="title">
-     <string>源文件路径</string>
+     <string>数据文件路径</string>
     </property>
     <widget class="QLineEdit" name="sourceLineEdit">
      <property name="geometry">
@@ -72,7 +72,7 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>129</y>
+      <y>240</y>
       <width>491</width>
       <height>91</height>
      </rect>
@@ -109,6 +109,10 @@
       <string>...</string>
      </property>
     </widget>
+    <zorder>targetLineEdit</zorder>
+    <zorder>loadTargetPushButton</zorder>
+    <zorder>targetGroupBox_2</zorder>
+    <zorder>targetGroupBox_2</zorder>
    </widget>
    <widget class="QGroupBox" name="logGroupBox">
     <property name="geometry">
@@ -116,7 +120,7 @@
       <x>520</x>
       <y>10</y>
       <width>491</width>
-      <height>341</height>
+      <height>451</height>
      </rect>
     </property>
     <property name="styleSheet">
@@ -131,7 +135,7 @@
        <x>20</x>
        <y>30</y>
        <width>451</width>
-       <height>291</height>
+       <height>401</height>
       </rect>
      </property>
     </widget>
@@ -140,7 +144,7 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>240</y>
+      <y>360</y>
       <width>491</width>
       <height>41</height>
      </rect>
@@ -159,7 +163,7 @@
     <property name="geometry">
      <rect>
       <x>200</x>
-      <y>310</y>
+      <y>420</y>
       <width>93</width>
       <height>41</height>
      </rect>
@@ -173,6 +177,48 @@
     <property name="text">
      <string>开始</string>
     </property>
+   </widget>
+   <widget class="QGroupBox" name="sourceCoorGroupBox">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>120</y>
+      <width>491</width>
+      <height>91</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">font: 75 10pt &quot;楷体&quot;;</string>
+    </property>
+    <property name="title">
+     <string>坐标文件路径</string>
+    </property>
+    <widget class="QLineEdit" name="sourceCoorLineEdit">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>30</y>
+       <width>401</width>
+       <height>41</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="loadCoorPushButton">
+     <property name="geometry">
+      <rect>
+       <x>430</x>
+       <y>30</y>
+       <width>41</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="cursor">
+      <cursorShape>PointingHandCursor</cursorShape>
+     </property>
+     <property name="text">
+      <string>...</string>
+     </property>
+    </widget>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
@@ -208,6 +254,12 @@
    </property>
   </action>
   <action name="insideAreaAction">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>区域内</string>
    </property>
