@@ -242,10 +242,10 @@ class Ui_MainWindow(QtWidgets.QWidget):
         points_inside_path = category + '\\' + points_inside_file
         points_outside_path = category + '\\' + points_outside_file
         if (mode == 0):
-            data.iloc[inside_index_list].to_csv(points_inside_path)
+            data.iloc[inside_index_list].to_csv(points_inside_path, encoding='utf_8_sig')
         elif (mode == 1):
-            data.iloc[outside_index_list].to_csv(points_outside_path)
+            data.iloc[outside_index_list].to_csv(points_outside_path, encoding='utf_8_sig')
         else:
-            data.iloc[inside_index_list].to_csv(points_inside_path)
-            data.iloc[outside_index_list].to_csv(points_outside_path)
+            data.iloc[inside_index_list].to_csv(points_inside_path, encoding='utf_8_sig')
+            data.iloc[outside_index_list].to_csv(points_outside_path, encoding='utf_8_sig')
 
