@@ -9,4 +9,5 @@ numpy, pandas, shapely
 ```
 python tool_main.py
 ```
+谢绝查bug，程序崩了肯定是数据有问题。
 
