@@ -1,5 +1,16 @@
+# -*- coding=utf-8 -*-
+
 from datetime import datetime
 from PyQt5 import QtCore, QtGui, QtWidgets
+import numpy as np
+import pandas as pd
+from shapely.geometry import Point
+from shapely.geometry import Polygon
+
+
+points_inside_file = "points_inside.csv"
+points_outside_file = "points_outside.csv"
+
 
 class Ui_MainWindow(QtWidgets.QWidget):
 
@@ -14,6 +25,7 @@ class Ui_MainWindow(QtWidgets.QWidget):
     def iniWindow(self, MainWindow):
         self.setupUi(MainWindow)
         self.loadSourcePushButton.clicked.connect(self.onSetSourcePathButtonClick)
+        self.loadCoorPushButton.clicked.connect(self.onSetSourceCoorPathButtonClick)
         self.loadTargetPushButton.clicked.connect(self.onSetTargetCategoryButtonClick)
         self.startPushButton.clicked.connect(self.onStartButtonClick)
 
@@ -58,7 +70,7 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.saveProgressBar = QtWidgets.QProgressBar(self.centralwidget)
         self.saveProgressBar.setGeometry(QtCore.QRect(10, 360, 491, 41))
         self.saveProgressBar.setStyleSheet("font: 75 10pt \"楷体\";")
-        self.saveProgressBar.setProperty("value", 24)
+        self.saveProgressBar.setProperty("value", 0)
         self.saveProgressBar.setAlignment(QtCore.Qt.AlignCenter)
         self.saveProgressBar.setObjectName("saveProgressBar")
         self.startPushButton = QtWidgets.QPushButton(self.centralwidget)
@@ -160,8 +172,8 @@ class Ui_MainWindow(QtWidgets.QWidget):
                                                          "./",
                                                          "Csv Files (*.csv)")
         self.sourceLineEdit.setText(fileName)
-        sourceFile = fileName
-        self.addLog("当前源文件路径为：" + sourceFile)
+        self.sourceFile = r"%s" % fileName
+        self.addLog("当前源文件路径为：" + self.sourceFile)
         # pass
 
     def onSetSourceCoorPathButtonClick(self):
@@ -170,20 +182,21 @@ class Ui_MainWindow(QtWidgets.QWidget):
                                                             "./",
                                                             "Csv Files (*.csv)")
         self.sourceCoorLineEdit.setText(fileName)
-        sourceCoorFile = fileName
-        self.addLog("当前源文件路径为：" + sourceCoorFile)
+        self.sourceCoorFile = r"%s" % fileName
+        self.addLog("当前源文件路径为：" + self.sourceCoorFile)
 
     def onSetTargetCategoryButtonClick(self):
         directory = QtWidgets.QFileDialog.getExistingDirectory(self,
                                                                "选取目标路径",
                                                                "./")
         self.targetLineEdit.setText(directory)
-        targetDirectory = directory
-        self.addLog("当前坐标文件目录为：" + targetDirectory)
+        self.targetDirectory = r"%s" % directory
+        self.addLog("当前坐标文件目录为：" + self.targetDirectory)
         # pass
 
     def onStartButtonClick(self):
-        pass
+        self.saveProgressBar.setValue(0)
+        self._classify(self.sourceFile, self.sourceCoorFile, self.targetDirectory, self.saveMode)
 
     def addLog(self, text, color="black", size="3"):
         now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
@@ -194,4 +207,45 @@ class Ui_MainWindow(QtWidgets.QWidget):
         return "<font size=\"" + size + "\" " \
                     "color=\"" + color + "\">" + text + "</font>"
 
+    def _classify(self, datapath, coorpath, category, mode):
+        inside_index_list = []  # coors of points inside the given area
+        outside_index_list = []  # coors of points outside the given area
+        coor = pd.read_csv(coorpath, engine='python')
+        num_coor = coor['lat'].count()
+        print(num_coor)
+        coor_list = [None] * num_coor
+        print("aaaa")
+        # build the Polygon
+        for i in range(num_coor):
+            coor_list[i] = (coor.loc[i, 'lon'], coor.loc[i, 'lat'])
+        # print(coor_list)
+        area = Polygon(coor_list)
+
+        data = pd.read_csv(datapath, engine='python')
+        # print(data.dtypes)
+        num_data_item = data['lat'].count()
+        # print(num_data_item)
+        for i in range(num_data_item):
+            # print("%f, %f" % (float(data.loc[i, 'lon']), float(data.loc[i, 'lat'])))
+            if area.contains(Point(float(data.loc[i, 'lon']), float(data.loc[i, 'lat']))):
+                print("0000000000000")
+                inside_index_list.append(i)
+            else:
+                print("1111111111111")
+                outside_index_list.append(i)
+            if i % 100 == 0:
+                print("03")
+                self.saveProgressBar.setValue(int(i / num_data_item))
+        print("dddd")
+
+        # Save data to csv files
+        points_inside_path = category + '\\' + points_inside_file
+        points_outside_path = category + '\\' + points_outside_file
+        if (mode == 0):
+            data.iloc[inside_index_list].to_csv(points_inside_path)
+        elif (mode == 1):
+            data.iloc[outside_index_list].to_csv(points_outside_path)
+        else:
+            data.iloc[inside_index_list].to_csv(points_inside_path)
+            data.iloc[outside_index_list].to_csv(points_outside_path)
 
